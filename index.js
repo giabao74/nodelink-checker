@@ -772,12 +772,9 @@ async function sendPeriodicStatusWebhook() {
             const cpu = stats.cpu ? `${formatCpuPercent(stats).toFixed(1)}%` : 'N/A';
             const usedRam = stats.memory?.used ? `${(stats.memory.used / 1024 / 1024).toFixed(0)} MB` : 'N/A';
             
-            // Mask node host for the webhook embed report (completely hidden)
-            const maskedHost = getMaskedHost(node.options.host, node.options.port);
-            
             return {
                 name: `🟢 ${nodeName}`,
-                value: `**Host:** \`${maskedHost}\`\n**Players:** \`${stats.players || 0}\`\n**CPU:** \`${cpu}\`\n**RAM:** \`${usedRam}\`\n**Ping:** \`${pingVal}\``,
+                value: `**Players:** \`${stats.players || 0}\`\n**CPU:** \`${cpu}\`\n**RAM:** \`${usedRam}\`\n**Ping:** \`${pingVal}\``,
                 inline: true
             };
         }),
@@ -794,12 +791,9 @@ async function handleNodeStatusChange(node, isOnline, reason = "") {
     
     const title = isOnline ? "🟢 Node Reconnected" : "🔴 Node Disconnected";
     
-    // Mask node connection details in public webhook alerts
-    const maskedHost = getMaskedHost(node.options.host, node.options.port);
-    
     const description = isOnline 
-        ? `**Node ID:** \`${node.options.id}\`\n**Host:** \`${maskedHost}\`\nhas successfully connected back to the cluster.`
-        : `**Node ID:** \`${node.options.id}\`\n**Host:** \`${maskedHost}\`\nhas lost connection to the cluster.\n${reason ? `**Reason:** \`${reason}\`` : ''}`;
+        ? `**Node ID:** \`${node.options.id}\` has successfully connected back to the cluster.`
+        : `**Node ID:** \`${node.options.id}\` has lost connection to the cluster.\n${reason ? `**Reason:** \`${reason}\`` : ''}`;
     
     const embed = {
         title,
