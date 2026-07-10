@@ -10,17 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #080b13;
-            --card-bg: rgba(13, 18, 30, 0.65);
+            --bg-color: #060814;
+            --card-bg: rgba(10, 15, 30, 0.7);
             --card-border: rgba(255, 255, 255, 0.05);
             --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --accent-green: #06b6d4; /* Neon cyan-green */
-            --accent-red: #f43f5e; /* Neon rose-red */
+            --text-secondary: #8e9bb0;
+            --accent-green: #06b6d4; /* Neon cyan */
+            --accent-red: #f43f5e; /* Rose red */
             --accent-blue: #3b82f6;
             --accent-purple: #a855f7;
-            --glow-green: rgba(6, 182, 212, 0.25);
-            --glow-red: rgba(244, 63, 94, 0.25);
+            --glow-green: rgba(6, 182, 212, 0.15);
+            --glow-red: rgba(244, 63, 94, 0.15);
             --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
@@ -34,12 +34,12 @@
             font-family: var(--font-main);
             background-color: var(--bg-color);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 40%),
-                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.12) 0px, transparent 40%),
-                radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.05) 0px, transparent 60%);
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 45%),
+                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 45%),
+                radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.06) 0px, transparent 65%);
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 2.5rem 1.5rem;
+            padding: 3rem 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -47,7 +47,7 @@
             position: relative;
         }
 
-        /* Subtle animated background grid */
+        /* Animated Grid Overlay */
         body::before {
             content: '';
             position: fixed;
@@ -56,24 +56,24 @@
             width: 100vw;
             height: 100vh;
             background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 50px 50px;
+                linear-gradient(to right, rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 60px 60px;
             z-index: -1;
             pointer-events: none;
-            animation: gridMove 20s linear infinite;
+            animation: gridMove 24s linear infinite;
         }
 
         @keyframes gridMove {
             0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
+            100% { background-position: 60px 60px; }
         }
 
-        /* Loading Screen Overlay */
+        /* Premium Loader Overlay */
         .loader-overlay {
             position: fixed;
             inset: 0;
-            background: #080b13;
+            background: #060814;
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -90,19 +90,19 @@
         }
 
         .spinner-ring {
-            width: 4.5rem;
-            height: 4.5rem;
-            border: 3.5px solid rgba(6, 182, 212, 0.1);
+            width: 5rem;
+            height: 5rem;
+            border: 4px solid rgba(6, 182, 212, 0.05);
             border-top-color: #06b6d4;
             border-radius: 50%;
             animation: spin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
-            box-shadow: 0 0 25px rgba(6, 182, 212, 0.2);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
         }
 
         .loader-text {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             color: #22d3ee;
             animation: pulseText 1.5s ease-in-out infinite alternate;
@@ -110,7 +110,7 @@
 
         @keyframes pulseText {
             0% { opacity: 0.5; text-shadow: 0 0 5px rgba(6, 182, 212, 0.2); }
-            100% { opacity: 1; text-shadow: 0 0 20px rgba(6, 182, 212, 0.7); }
+            100% { opacity: 1; text-shadow: 0 0 25px rgba(6, 182, 212, 0.8); }
         }
 
         .container {
@@ -118,7 +118,7 @@
             max-width: 1200px;
             display: flex;
             flex-direction: column;
-            gap: 2.5rem;
+            gap: 3rem;
             z-index: 1;
         }
 
@@ -128,8 +128,8 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 2.25rem;
             animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
@@ -139,17 +139,17 @@
         }
 
         .brand-section h1 {
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #3b82f6, #a855f7, #06b6d4);
+            background: linear-gradient(135deg, #60a5fa, #c084fc, #22d3ee);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.03em;
+            letter-spacing: -0.04em;
             display: flex;
             align-items: center;
             gap: 0.85rem;
-            animation: shimmer 4s linear infinite;
+            animation: shimmer 5s linear infinite;
         }
 
         @keyframes shimmer {
@@ -160,8 +160,8 @@
 
         .brand-section p {
             color: var(--text-secondary);
-            font-size: 1rem;
-            margin-top: 0.35rem;
+            font-size: 1.05rem;
+            margin-top: 0.4rem;
             font-weight: 400;
         }
 
@@ -172,34 +172,35 @@
         }
 
         .uptime-badge {
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px solid rgba(59, 130, 246, 0.15);
+            background: rgba(59, 130, 246, 0.06);
+            border: 1px solid rgba(59, 130, 246, 0.12);
             color: #93c5fd;
-            padding: 0.6rem 1.25rem;
+            padding: 0.65rem 1.35rem;
             border-radius: 9999px;
             font-weight: 600;
             font-size: 0.875rem;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.05);
         }
 
         .admin-link {
-            background: rgba(168, 85, 247, 0.08);
-            border: 1px solid rgba(168, 85, 247, 0.15);
+            background: rgba(168, 85, 247, 0.06);
+            border: 1px solid rgba(168, 85, 247, 0.12);
             color: #e9d5ff;
-            padding: 0.6rem 1.25rem;
+            padding: 0.65rem 1.35rem;
             border-radius: 9999px;
             font-weight: 600;
             font-size: 0.875rem;
             text-decoration: none;
-            backdrop-filter: blur(10px);
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.1);
+            backdrop-filter: blur(12px);
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.05);
         }
 
         .admin-link:hover {
-            background: rgba(168, 85, 247, 0.15);
-            transform: translateY(-1px);
+            background: rgba(168, 85, 247, 0.14);
+            border-color: rgba(168, 85, 247, 0.25);
+            transform: translateY(-2px);
         }
 
         /* Stats Grid */
@@ -218,15 +219,15 @@
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 1.25rem;
+            border-radius: 1.5rem;
             padding: 1.75rem;
             display: flex;
             align-items: center;
             gap: 1.5rem;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
             position: relative;
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .stat-card::before {
@@ -236,51 +237,48 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
-            z-index: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
             pointer-events: none;
         }
 
         .stat-card:hover {
-            transform: translateY(-3px) scale(1.02);
+            transform: translateY(-4px) scale(1.02);
             border-color: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.6);
         }
 
         .stat-icon {
             width: 3.75rem;
             height: 3.75rem;
-            border-radius: 1rem;
+            border-radius: 1.15rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1;
             position: relative;
         }
 
-        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.15); }
-        .stat-icon.green { background: rgba(6, 182, 212, 0.1); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.15); }
-        .stat-icon.purple { background: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.15); }
-        .stat-icon.orange { background: rgba(249, 115, 22, 0.1); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.15); }
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.08); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.12); }
+        .stat-icon.green { background: rgba(6, 182, 212, 0.08); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.12); }
+        .stat-icon.purple { background: rgba(168, 85, 247, 0.08); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.12); }
+        .stat-icon.orange { background: rgba(249, 115, 22, 0.08); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.12); }
 
         .stat-info {
             display: flex;
             flex-direction: column;
-            z-index: 1;
         }
 
         .stat-label {
             color: var(--text-secondary);
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.06em;
         }
 
         .stat-value {
-            font-size: 1.85rem;
+            font-size: 2rem;
             font-weight: 800;
-            margin-top: 0.15rem;
+            margin-top: 0.2rem;
             letter-spacing: -0.02em;
         }
 
@@ -294,9 +292,9 @@
         }
 
         .nodes-section-header h2 {
-            font-size: 1.65rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
             background: linear-gradient(to right, #f3f4f6, #9ca3af);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -306,17 +304,17 @@
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             color: var(--text-primary);
-            padding: 0.6rem 1.25rem;
-            border-radius: 0.75rem;
+            padding: 0.65rem 1.35rem;
+            border-radius: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.65rem;
             font-family: var(--font-main);
             font-size: 0.9rem;
             font-weight: 600;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .refresh-btn:hover {
@@ -341,19 +339,19 @@
         .nodes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 1.75rem;
+            gap: 2rem;
             animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
         }
 
         .node-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 1.5rem;
-            padding: 1.75rem;
+            border-radius: 1.75rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            backdrop-filter: blur(20px);
+            gap: 1.75rem;
+            backdrop-filter: blur(25px);
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -367,23 +365,23 @@
 
         .node-card.online {
             box-shadow: 0 0 35px -10px var(--glow-green);
-            border-color: rgba(6, 182, 212, 0.15);
+            border-color: rgba(6, 182, 212, 0.12);
         }
 
         .node-card.online:hover {
-            transform: translateY(-5px);
-            border-color: rgba(6, 182, 212, 0.35);
+            transform: translateY(-6px);
+            border-color: rgba(6, 182, 212, 0.3);
             box-shadow: 0 15px 40px -10px var(--glow-green);
         }
 
         .node-card.offline {
             box-shadow: 0 0 35px -10px var(--glow-red);
-            border-color: rgba(244, 63, 94, 0.15);
+            border-color: rgba(244, 63, 94, 0.12);
         }
 
         .node-card.offline:hover {
-            transform: translateY(-5px);
-            border-color: rgba(244, 63, 94, 0.35);
+            transform: translateY(-6px);
+            border-color: rgba(244, 63, 94, 0.3);
             box-shadow: 0 15px 40px -10px var(--glow-red);
         }
 
@@ -409,49 +407,48 @@
         .node-name-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 0.3rem;
+            gap: 0.35rem;
         }
 
         .node-name {
-            font-size: 1.35rem;
-            font-weight: 700;
-            letter-spacing: -0.01em;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
         }
 
         .node-host {
             font-family: monospace;
             color: var(--text-secondary);
             font-size: 0.85rem;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 0.2rem 0.5rem;
-            border-radius: 0.35rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.5rem;
             width: fit-content;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .status-badge {
             display: flex;
             align-items: center;
-            gap: 0.45rem;
-            padding: 0.4rem 0.85rem;
+            gap: 0.5rem;
+            padding: 0.45rem 1rem;
             border-radius: 9999px;
             font-size: 0.775rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            backdrop-filter: blur(10px);
+            letter-spacing: 0.08em;
         }
 
         .node-card.online .status-badge {
-            background: rgba(6, 182, 212, 0.08);
+            background: rgba(6, 182, 212, 0.06);
             color: #22d3ee;
-            border: 1px solid rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.12);
         }
 
         .node-card.offline .status-badge {
-            background: rgba(244, 63, 94, 0.08);
+            background: rgba(244, 63, 94, 0.06);
             color: #fb7185;
-            border: 1px solid rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.12);
         }
 
         .status-dot {
@@ -478,106 +475,99 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
         }
 
-        /* Stats Details */
-        .node-stats {
+        /* Circular Progress Dials */
+        .dials-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0.5rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 1.25rem 0;
+        }
+
+        .dial-item {
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
+            align-items: center;
+            gap: 0.65rem;
         }
 
-        .stat-row {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .stat-row-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .stat-row-label {
+        .dial-label {
+            font-size: 0.775rem;
             color: var(--text-secondary);
-        }
-
-        .stat-row-val {
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
-        .progress-bar-container {
+        .dial-wrapper {
+            position: relative;
+            width: 76px;
+            height: 76px;
+        }
+
+        .circular-chart {
             width: 100%;
-            height: 7px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 99px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.02);
-            position: relative;
-        }
-
-        .progress-bar {
             height: 100%;
-            border-radius: 99px;
-            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
         }
 
-        .progress-bar.blue { 
-            background: linear-gradient(90deg, #2563eb, #60a5fa); 
-            box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
-        }
-        .progress-bar.purple { 
-            background: linear-gradient(90deg, #7c3aed, #c084fc); 
-            box-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.03);
+            stroke-width: 2.8;
         }
 
-        /* Shimmering animation inside progress bars */
-        .progress-bar::after {
-            content: '';
+        .circle {
+            fill: none;
+            stroke-width: 2.8;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .circular-chart.blue .circle {
+            stroke: url(#blue-gradient);
+            filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.3));
+        }
+
+        .circular-chart.purple .circle {
+            stroke: url(#purple-gradient);
+            filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.3));
+        }
+
+        .dial-percentage {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.15),
-                transparent
-            );
-            transform: translateX(-100%);
-            animation: loading-shimmer 2s infinite;
-        }
-
-        @keyframes loading-shimmer {
-            100% { transform: translateX(100%); }
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
         }
 
         .node-info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0.85rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 1rem;
+            gap: 1rem;
         }
 
         .node-info-item {
             display: flex;
             flex-direction: column;
-            gap: 0.2rem;
+            gap: 0.25rem;
         }
 
         .node-info-label {
             font-size: 0.75rem;
             color: var(--text-secondary);
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
         }
 
         .node-info-val {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
         }
 
@@ -634,6 +624,20 @@
     </style>
 </head>
 <body>
+    <!-- Gradient definitions for SVG Charts -->
+    <svg style="width:0; height:0; position:absolute;" width="0" height="0">
+        <defs>
+            <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#3b82f6" />
+                <stop offset="100%" stop-color="#22d3ee" />
+            </linearGradient>
+            <linearGradient id="purple-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#a855f7" />
+                <stop offset="100%" stop-color="#ec4899" />
+            </linearGradient>
+        </defs>
+    </svg>
+
     <!-- Premium Loader Overlay -->
     <div class="loader-overlay" id="loader-overlay">
         <div class="spinner-ring"></div>
@@ -781,40 +785,56 @@
                 if (node.connected) {
                     const stats = node.stats;
                     const pingText = node.ping !== null ? `${node.ping}ms` : 'N/A';
-                    const displayHost = node.hostString || `${node.host}:${node.port}`;
                     
+                    // Securely completely hide the host string if not admin (no ugly placeholder badge!)
+                    const isPrivate = node.host === '🔒 Private' || node.hostString === '🔒 Private Connection';
+                    const hostBadgeHtml = isPrivate ? '' : `<span class="node-host">${node.hostString || `${node.host}:${node.port}`}</span>`;
+                    
+                    const ramUsedPercent = stats.ramTotal > 0 ? Math.min(Math.max((stats.ramUsed / stats.ramTotal * 100), 0), 100).toFixed(0) : 0;
+                    const cpuPercent = parseFloat(stats.cpuLoad).toFixed(0);
+
+                    // Circular stroke math
+                    const cpuDashArray = `${cpuPercent}, 100`;
+                    const ramDashArray = `${ramUsedPercent}, 100`;
+
                     nodeCard.innerHTML = `
                         <div class="node-header">
                             <div class="node-name-wrapper">
                                 <span class="node-name">${node.id}</span>
-                                <span class="node-host">${displayHost}</span>
+                                ${hostBadgeHtml}
                             </div>
                             <span class="status-badge">
                                 <span class="status-dot"></span> Online
                             </span>
                         </div>
-                        <div class="node-stats">
-                            <!-- CPU -->
-                            <div class="stat-row">
-                                <div class="stat-row-header">
-                                    <span class="stat-row-label">CPU Load</span>
-                                    <span class="stat-row-val">${stats.cpuLoad}%</span>
+                        
+                        <!-- Premium Circular Dials -->
+                        <div class="dials-container">
+                            <!-- CPU Dial -->
+                            <div class="dial-item">
+                                <div class="dial-wrapper">
+                                    <svg viewBox="0 0 36 36" class="circular-chart blue">
+                                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="circle" stroke-dasharray="${cpuDashArray}" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    </svg>
+                                    <div class="dial-percentage">${cpuPercent}%</div>
                                 </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar blue" style="width: ${stats.cpuLoad}%"></div>
-                                </div>
+                                <span class="dial-label">CPU Load</span>
                             </div>
-                            <!-- RAM -->
-                            <div class="stat-row">
-                                <div class="stat-row-header">
-                                    <span class="stat-row-label">RAM Usage</span>
-                                    <span class="stat-row-val">${stats.ramUsed} MB / ${stats.ramTotal} MB</span>
+                            
+                            <!-- RAM Dial -->
+                            <div class="dial-item">
+                                <div class="dial-wrapper">
+                                    <svg viewBox="0 0 36 36" class="circular-chart purple">
+                                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="circle" stroke-dasharray="${ramDashArray}" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    </svg>
+                                    <div class="dial-percentage">${ramUsedPercent}%</div>
                                 </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar purple" style="width: ${stats.ramTotal > 0 ? (stats.ramUsed / stats.ramTotal * 100) : 0}%"></div>
-                                </div>
+                                <span class="dial-label">RAM Load</span>
                             </div>
                         </div>
+
                         <div class="node-info-grid">
                             <div class="node-info-item">
                                 <span class="node-info-label">Active Players</span>
@@ -824,19 +844,25 @@
                                 <span class="node-info-label">Ping</span>
                                 <span class="node-info-val">${pingText}</span>
                             </div>
-                            <div class="node-info-item" style="grid-column: 1/-1;">
+                            <div class="node-info-item">
+                                <span class="node-info-label">RAM Usage</span>
+                                <span class="node-info-val">${stats.ramUsed} / ${stats.ramTotal} MB</span>
+                            </div>
+                            <div class="node-info-item">
                                 <span class="node-info-label">Node Uptime</span>
-                                <span class="node-info-val">${stats.uptime}</span>
+                                <span class="node-info-val" style="font-size:0.875rem;">${stats.uptime}</span>
                             </div>
                         </div>
                     `;
                 } else {
-                    const displayHost = node.hostString || `${node.host}:${node.port}`;
+                    const isPrivate = node.host === '🔒 Private' || node.hostString === '🔒 Private Connection';
+                    const hostBadgeHtml = isPrivate ? '' : `<span class="node-host">${node.hostString || `${node.host}:${node.port}`}</span>`;
+                    
                     nodeCard.innerHTML = `
                         <div class="node-header">
                             <div class="node-name-wrapper">
                                 <span class="node-name">${node.id}</span>
-                                <span class="node-host">${displayHost}</span>
+                                ${hostBadgeHtml}
                             </div>
                             <span class="status-badge">
                                 <span class="status-dot"></span> Offline
