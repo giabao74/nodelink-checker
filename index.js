@@ -145,6 +145,9 @@ app.use(express.json());
 // Serve static dashboard files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve favicon puzzle.png from project root directory
+app.get('/puzzle.png', (req, res) => res.sendFile(path.join(__dirname, 'puzzle.png')));
+
 // Routes
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
@@ -809,17 +812,27 @@ async function handleNodeStatusChange(node, isOnline, reason = "") {
 // Startup Flow
 (async () => {
     // 1. Load nodes from database or env fallback
+    const hasSupabase = !!(process.env.SUPABASE_URL && process.env.SUPABASE_KEY);
     try {
-        myNodes = await getNodesFromSupabase();
-        if (!myNodes || myNodes.length === 0) {
-            console.log("ℹ️ No nodes found in Supabase or Supabase not configured. Falling back to env...");
-            myNodes = buildNodesFromEnv();
+        if (hasSupabase) {
+            myNodes = await getNodesFromSupabase();
+            if (!myNodes || myNodes.length === 0) {
+                console.log("ℹ️ Supabase is configured but returned no nodes. Waiting for sync...");
+                myNodes = [];
+            } else {
+                console.log(`ℹ️ Successfully loaded ${myNodes.length} nodes from Supabase.`);
+            }
         } else {
-            console.log(`ℹ️ Successfully loaded ${myNodes.length} nodes from Supabase.`);
+            console.log("ℹ️ Supabase not configured. Loading nodes from env...");
+            myNodes = buildNodesFromEnv();
         }
     } catch (err) {
         console.error("⚠️ Failed to load nodes at startup:", err.message);
-        myNodes = buildNodesFromEnv();
+        if (!hasSupabase) {
+            myNodes = buildNodesFromEnv();
+        } else {
+            myNodes = [];
+        }
     }
 
     // 2. Setup Lavalink Manager
@@ -850,9 +863,6 @@ async function handleNodeStatusChange(node, isOnline, reason = "") {
         console.error(`⚠️ [Lavalink] Node ${node.options.id} error:`, error.message);
     });
 
-    // Load last webhook message ID from Supabase (to avoid spamming)
-    await loadWebhookMessageIdFromDb();
-
     // 4. Start Discord client
     client.login(process.env.DISCORD_TOKEN);
 })();
@@ -863,6 +873,12 @@ client.on('ready', async () => {
     
     await lavalinkManager.init({ ...client.user });
     console.log(`🎵 Connecting to ${myNodes.length} NodeLink node(s)...`);
+    
+    // Sync nodes from DB immediately on boot
+    await syncNodesWithDb();
+    
+    // Load last webhook message ID from Supabase (to avoid spamming)
+    await loadWebhookMessageIdFromDb();
     
     // Run Supabase keepalive immediately on startup
     await runSupabaseKeepAlive();
