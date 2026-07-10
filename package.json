@@ -1,0 +1,30 @@
+{
+  "name": "nodelink-keeper",
+  "version": "1.0.0",
+  "description": "A Discord bot to keep NodeLink alive by pinging and rendering random tracks, with bilingual status command.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "nodelink",
+    "lavalink",
+    "keeper",
+    "render"
+  ],
+  "author": "iamprmgvyt",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/builders": "^1.8.1",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "lavalink-client": "^2.1.6",
+    "@supabase/supabase-js": "^2.43.4"
+  }
+}

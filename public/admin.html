@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - NodeLink Keeper</title>
+    <link rel="icon" type="image/png" href="/puzzle.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 1.5rem;
+        }
+
+        .brand-section h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.025em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-section p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            border-left: 1px solid var(--card-border);
+            padding-left: 0.75rem;
+            transition: color 0.2s;
+        }
+
+        .logout-btn:hover {
+            color: #f87171;
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel-card h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Form styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group input {
+            cursor: pointer;
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Node List table */
+        .node-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .node-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .node-table th, .node-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.9rem;
+        }
+
+        .node-table th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .node-table td {
+            font-weight: 500;
+        }
+
+        .host-cell {
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 0.4rem 0.75rem;
+            border-radius: 0.35rem;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: white;
+        }
+
+        /* Toasts */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .toast.success { background: #10b981; border: 1px solid #059669; }
+        .toast.error { background: #ef4444; border: 1px solid #dc2626; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        .dashboard-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.95rem;
+        }
+
+        .dashboard-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="brand-section">
+                <h1>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #8b5cf6;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    NodeLink Admin
+                </h1>
+                <p>Add, delete and synchronize Lavalink nodes dynamically</p>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <a href="/" class="dashboard-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                    Dashboard
+                </a>
+                <div class="user-badge" id="user-badge" style="display: none;">
+                    <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+                    <span id="user-name" class="user-name">--</span>
+                    <a href="/api/auth/logout" class="logout-btn">Logout</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-layout">
+            <!-- Left panel: Current nodes list -->
+            <div class="panel-card">
+                <h2>Active Database Nodes</h2>
+                <div class="node-table-wrapper">
+                    <table class="node-table">
+                        <thead>
+                            <tr>
+                                <th>Host</th>
+                                <th>Port</th>
+                                <th>SSL</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nodes-list">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">
+                                    Loading nodes...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right panel: Add new node form -->
+            <div class="panel-card">
+                <h2>Add New Node</h2>
+                <form id="add-node-form" onsubmit="addNode(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <div class="form-group">
+                        <label for="host">Node Hostname / IP</label>
+                        <input type="text" id="host" required placeholder="e.g. nodelink.example.com or 1.2.3.4">
+                    </div>
+                    <div class="form-group">
+                        <label for="port">Port</label>
+                        <input type="number" id="port" required value="2333" placeholder="2333">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password / Auth Key</label>
+                        <input type="text" id="password" required value="Iamprmgvyt2013@" placeholder="NodeLink Password">
+                    </div>
+                    <div class="form-group checkbox-group" onclick="toggleSecureCheckbox()">
+                        <input type="checkbox" id="secure">
+                        <label for="secure" style="cursor: pointer;">Secure Node (SSL / HTTPS / Port 443)</label>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add & Sync Node
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const nodesList = document.getElementById('nodes-list');
+        const submitBtn = document.getElementById('submit-btn');
+        const addNodeForm = document.getElementById('add-node-form');
+        const toast = document.getElementById('toast');
+
+        // Fetch user profile on load
+        async function fetchUser() {
+            try {
+                const res = await fetch('/api/auth/me');
+                if (!res.ok) {
+                    // Redirect to OAuth login
+                    window.location.href = '/admin';
+                    return;
+                }
+                const session = await res.json();
+                
+                // Show user details
+                document.getElementById('user-name').textContent = session.username;
+                if (session.avatar) {
+                    document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${session.userId}/${session.avatar}.png`;
+                } else {
+                    document.getElementById('user-avatar').src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                }
+                document.getElementById('user-badge').style.display = 'flex';
+            } catch (e) {
+                console.error("Auth check failed:", e);
+                window.location.href = '/admin';
+            }
+        }
+
+        // Fetch nodes list
+        async function fetchNodes() {
+            try {
+                const res = await fetch('/api/nodes');
+                if (!res.ok) throw new Error("Failed to fetch nodes");
+                const data = await res.json();
+                
+                nodesList.innerHTML = '';
+                if (data.length === 0) {
+                    nodesList.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">
+                                No nodes configured in the database.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                data.forEach(node => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><span class="host-cell">${node.host}</span></td>
+                        <td>${node.port}</td>
+                        <td>${node.secure ? '🔒 Yes' : '🔓 No'}</td>
+                        <td style="text-align: right;">
+                            <button class="delete-btn" onclick="deleteNode(${node.id})">Delete</button>
+                        </td>
+                    `;
+                    nodesList.appendChild(row);
+                });
+            } catch (e) {
+                showToast("Failed to fetch nodes from database.", "error");
+            }
+        }
+
+        // Add node
+        async function addNode(e) {
+            e.preventDefault();
+            
+            const host = document.getElementById('host').value.trim();
+            const port = parseInt(document.getElementById('port').value) || 2333;
+            const password = document.getElementById('password').value.trim();
+            const secure = document.getElementById('secure').checked;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Adding Node...';
+            
+            try {
+                const res = await fetch('/api/nodes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ host, port, password, secure })
+                });
+                
+                const result = await res.json();
+                if (!res.ok) throw new Error(result.error || "Failed to add node");
+                
+                showToast("Node added and cluster synced successfully!", "success");
+                addNodeForm.reset();
+                document.getElementById('port').value = "2333";
+                document.getElementById('password').value = "Iamprmgvyt2013@";
+                
+                await fetchNodes();
+            } catch (err) {
+                showToast(err.message, "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add & Sync Node
+                `;
+            }
+        }
+
+        // Delete node
+        async function deleteNode(id) {
+            if (!confirm("Are you sure you want to delete this node and sync the cluster?")) return;
+            
+            try {
+                const res = await fetch(`/api/nodes/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                
+                if (!res.ok) throw new Error(result.error || "Failed to delete node");
+                
+                showToast("Node deleted and cluster synced successfully!", "success");
+                await fetchNodes();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // Toggle secure checkbox helper
+        function toggleSecureCheckbox() {
+            const checkbox = document.getElementById('secure');
+            checkbox.checked = !checkbox.checked;
+        }
+
+        // Show toast notifications
+        function showToast(message, type) {
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize page
+        (async () => {
+            await fetchUser();
+            await fetchNodes();
+        })();
+    </script>
+</body>
+</html>

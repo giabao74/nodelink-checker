@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NodeLink Cluster Status</title>
+    <link rel="icon" type="image/png" href="/puzzle.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #080b13;
+            --card-bg: rgba(13, 18, 30, 0.65);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-green: #06b6d4; /* Neon cyan-green */
+            --accent-red: #f43f5e; /* Neon rose-red */
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --glow-green: rgba(6, 182, 212, 0.25);
+            --glow-red: rgba(244, 63, 94, 0.25);
+            --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 40%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.12) 0px, transparent 40%),
+                radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.05) 0px, transparent 60%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Subtle animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* Loading Screen Overlay */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: #080b13;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+        }
+
+        .loader-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .spinner-ring {
+            width: 4.5rem;
+            height: 4.5rem;
+            border: 3.5px solid rgba(6, 182, 212, 0.1);
+            border-top-color: #06b6d4;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.2);
+        }
+
+        .loader-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #22d3ee;
+            animation: pulseText 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseText {
+            0% { opacity: 0.5; text-shadow: 0 0 5px rgba(6, 182, 212, 0.2); }
+            100% { opacity: 1; text-shadow: 0 0 20px rgba(6, 182, 212, 0.7); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 2rem;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #a855f7, #06b6d4);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.03em;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .brand-section p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.35rem;
+            font-weight: 400;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .uptime-badge {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            padding: 0.6rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .admin-link {
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            color: #e9d5ff;
+            padding: 0.6rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.1);
+        }
+
+        .admin-link:hover {
+            background: rgba(168, 85, 247, 0.15);
+            transform: translateY(-1px);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-icon {
+            width: 3.75rem;
+            height: 3.75rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.15); }
+        .stat-icon.green { background: rgba(6, 182, 212, 0.1); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.15); }
+        .stat-icon.purple { background: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.15); }
+        .stat-icon.orange { background: rgba(249, 115, 22, 0.1); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.15); }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .stat-value {
+            font-size: 1.85rem;
+            font-weight: 800;
+            margin-top: 0.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* Nodes Header */
+        .nodes-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        .nodes-section-header h2 {
+            font-size: 1.65rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #f3f4f6, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .refresh-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 0.6rem 1.25rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: scale(1.02);
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.98);
+        }
+
+        .refresh-btn svg.spin {
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Nodes Grid */
+        .nodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1.75rem;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+        }
+
+        .node-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: cardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .node-card.online {
+            box-shadow: 0 0 35px -10px var(--glow-green);
+            border-color: rgba(6, 182, 212, 0.15);
+        }
+
+        .node-card.online:hover {
+            transform: translateY(-5px);
+            border-color: rgba(6, 182, 212, 0.35);
+            box-shadow: 0 15px 40px -10px var(--glow-green);
+        }
+
+        .node-card.offline {
+            box-shadow: 0 0 35px -10px var(--glow-red);
+            border-color: rgba(244, 63, 94, 0.15);
+        }
+
+        .node-card.offline:hover {
+            transform: translateY(-5px);
+            border-color: rgba(244, 63, 94, 0.35);
+            box-shadow: 0 15px 40px -10px var(--glow-red);
+        }
+
+        .node-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .node-card.online::before { background-color: var(--accent-green); }
+        .node-card.offline::before { background-color: var(--accent-red); }
+
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .node-name-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .node-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .node-host {
+            font-family: monospace;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.35rem;
+            width: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.775rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            backdrop-filter: blur(10px);
+        }
+
+        .node-card.online .status-badge {
+            background: rgba(6, 182, 212, 0.08);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.15);
+        }
+
+        .node-card.offline .status-badge {
+            background: rgba(244, 63, 94, 0.08);
+            color: #fb7185;
+            border: 1px solid rgba(244, 63, 94, 0.15);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .node-card.online .status-dot {
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        .node-card.offline .status-dot {
+            background-color: var(--accent-red);
+            box-shadow: 0 0 10px var(--accent-red);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(6, 182, 212, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+
+        /* Stats Details */
+        .node-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .stat-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-row-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .stat-row-label {
+            color: var(--text-secondary);
+        }
+
+        .stat-row-val {
+            font-weight: 700;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 99px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .progress-bar.blue { 
+            background: linear-gradient(90deg, #2563eb, #60a5fa); 
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        }
+        .progress-bar.purple { 
+            background: linear-gradient(90deg, #7c3aed, #c084fc); 
+            box-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
+        }
+
+        /* Shimmering animation inside progress bars */
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.15),
+                transparent
+            );
+            transform: translateX(-100%);
+            animation: loading-shimmer 2s infinite;
+        }
+
+        @keyframes loading-shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        .node-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1rem;
+        }
+
+        .node-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .node-info-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .node-info-val {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .offline-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 3rem 0;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .offline-placeholder svg {
+            width: 3.25rem;
+            height: 3.25rem;
+            color: rgba(244, 63, 94, 0.3);
+            animation: wiggle 1s ease infinite alternate;
+        }
+
+        @keyframes wiggle {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(5deg); }
+        }
+
+        footer {
+            margin-top: auto;
+            padding-top: 4rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.25rem;
+            }
+            .brand-section h1 { font-size: 2rem; }
+            .header-actions { align-self: flex-start; width: 100%; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Premium Loader Overlay -->
+    <div class="loader-overlay" id="loader-overlay">
+        <div class="spinner-ring"></div>
+        <div class="loader-text">Connecting to Cluster...</div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="brand-section">
+                <h1>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #22d3ee;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
+                    NodeLink Monitor
+                </h1>
+                <p>Real-time cluster health and metrics dashboard</p>
+            </div>
+            <div class="header-actions">
+                <div class="uptime-badge" id="bot-uptime">Uptime: --</div>
+                <a href="/admin" class="admin-link">Admin Console</a>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <!-- Nodes Online -->
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Nodes Status</div>
+                    <div class="stat-value" id="stats-nodes">-- / --</div>
+                </div>
+            </div>
+            <!-- Total Players -->
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Active Players</div>
+                    <div class="stat-value" id="stats-players">--</div>
+                </div>
+            </div>
+            <!-- Average CPU -->
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3"/><path d="M15 1v3"/><path d="M9 20v3"/><path d="M15 20v3"/><path d="M20 9h3"/><path d="M20 15h3"/><path d="M1 9h3"/><path d="M1 15h3"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Avg CPU Load</div>
+                    <div class="stat-value" id="stats-cpu">--</div>
+                </div>
+            </div>
+            <!-- Cluster RAM -->
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v20M18 2v20M6 6h12M6 10h12M6 14h12M6 18h12"/></svg>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">Cluster RAM</div>
+                    <div class="stat-value" id="stats-ram">--</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nodes-section-header">
+            <h2>Nodes Overview</h2>
+            <button class="refresh-btn" id="refresh-btn" onclick="fetchStatus(true)">
+                <svg id="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Refresh Status
+            </button>
+        </div>
+
+        <!-- Nodes Grid -->
+        <div class="nodes-grid" id="nodes-container">
+            <!-- Node cards will be injected here by Javascript -->
+        </div>
+
+        <footer>
+            <p>NodeLink Keeper System &bull; Automatically refreshes every 5 seconds</p>
+        </footer>
+    </div>
+
+    <script>
+        const nodesContainer = document.getElementById('nodes-container');
+        const refreshIcon = document.getElementById('refresh-icon');
+        const refreshBtn = document.getElementById('refresh-btn');
+
+        async function fetchStatus(isManual = false) {
+            if (isManual) {
+                refreshIcon.classList.add('spin');
+                refreshBtn.disabled = true;
+            }
+
+            try {
+                const response = await fetch('/api/status');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                
+                // Update global metrics
+                document.getElementById('bot-uptime').textContent = `Uptime: ${data.botUptime}`;
+                document.getElementById('stats-nodes').textContent = `${data.cluster.onlineNodes} / ${data.cluster.totalNodes}`;
+                document.getElementById('stats-players').textContent = data.cluster.totalPlayers;
+                document.getElementById('stats-cpu').textContent = `${data.cluster.avgCpuLoad}%`;
+                document.getElementById('stats-ram').textContent = `${data.cluster.totalRamUsed} MB`;
+
+                // Render Nodes
+                renderNodes(data.nodes);
+            } catch (error) {
+                console.error('Error fetching cluster status:', error);
+            } finally {
+                // Instantly remove loading screen overlay once data is loaded
+                const loader = document.getElementById('loader-overlay');
+                if (loader) {
+                    loader.classList.add('fade-out');
+                }
+
+                if (isManual) {
+                    setTimeout(() => {
+                        refreshIcon.classList.remove('spin');
+                        refreshBtn.disabled = false;
+                    }, 500);
+                }
+            }
+        }
+
+        function renderNodes(nodes) {
+            nodesContainer.innerHTML = '';
+            
+            if (!nodes || nodes.length === 0) {
+                nodesContainer.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        <p>No nodes configured or available.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            nodes.forEach((node, index) => {
+                const nodeCard = document.createElement('div');
+                nodeCard.className = `node-card ${node.connected ? 'online' : 'offline'}`;
+                // Stagger entry animations
+                nodeCard.style.animationDelay = `${index * 0.08}s`;
+
+                if (node.connected) {
+                    const stats = node.stats;
+                    const pingText = node.ping !== null ? `${node.ping}ms` : 'N/A';
+                    const displayHost = node.hostString || `${node.host}:${node.port}`;
+                    
+                    nodeCard.innerHTML = `
+                        <div class="node-header">
+                            <div class="node-name-wrapper">
+                                <span class="node-name">${node.id}</span>
+                                <span class="node-host">${displayHost}</span>
+                            </div>
+                            <span class="status-badge">
+                                <span class="status-dot"></span> Online
+                            </span>
+                        </div>
+                        <div class="node-stats">
+                            <!-- CPU -->
+                            <div class="stat-row">
+                                <div class="stat-row-header">
+                                    <span class="stat-row-label">CPU Load</span>
+                                    <span class="stat-row-val">${stats.cpuLoad}%</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar blue" style="width: ${stats.cpuLoad}%"></div>
+                                </div>
+                            </div>
+                            <!-- RAM -->
+                            <div class="stat-row">
+                                <div class="stat-row-header">
+                                    <span class="stat-row-label">RAM Usage</span>
+                                    <span class="stat-row-val">${stats.ramUsed} MB / ${stats.ramTotal} MB</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar purple" style="width: ${stats.ramTotal > 0 ? (stats.ramUsed / stats.ramTotal * 100) : 0}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="node-info-grid">
+                            <div class="node-info-item">
+                                <span class="node-info-label">Active Players</span>
+                                <span class="node-info-val">${stats.players}</span>
+                            </div>
+                            <div class="node-info-item">
+                                <span class="node-info-label">Ping</span>
+                                <span class="node-info-val">${pingText}</span>
+                            </div>
+                            <div class="node-info-item" style="grid-column: 1/-1;">
+                                <span class="node-info-label">Node Uptime</span>
+                                <span class="node-info-val">${stats.uptime}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const displayHost = node.hostString || `${node.host}:${node.port}`;
+                    nodeCard.innerHTML = `
+                        <div class="node-header">
+                            <div class="node-name-wrapper">
+                                <span class="node-name">${node.id}</span>
+                                <span class="node-host">${displayHost}</span>
+                            </div>
+                            <span class="status-badge">
+                                <span class="status-dot"></span> Offline
+                            </span>
+                        </div>
+                        <div class="offline-placeholder">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <p>Node connection failed or disconnected</p>
+                        </div>
+                    `;
+                }
+                nodesContainer.appendChild(nodeCard);
+            });
+        }
+
+        // Fetch on load and set interval
+        fetchStatus();
+        setInterval(() => fetchStatus(), 5000);
+    </script>
+</body>
+</html>
